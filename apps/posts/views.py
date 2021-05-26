@@ -5,7 +5,7 @@ from apps.posts.forms import PostForm
 
 def index(request):
     posts = Post.objects.all()
-    return render(request, 'base.html', {"posts": posts})
+    return render(request, 'posts/index.html', {"posts": posts})
 
 
 def create(request):
