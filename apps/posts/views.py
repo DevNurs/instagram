@@ -1,10 +1,17 @@
 from django.shortcuts import render, redirect
 from apps.posts.models import Post
+from apps.comments.models import Comment
 from apps.posts.forms import PostForm
 
 
 def index(request):
     posts = Post.objects.all()
+    if 'comment' in request.POST:
+        id = request.POST.get('post_id')
+        post = Post.objects.get(id=id)
+        text = request.POST.get('comment_text')
+        comment = Comment.objects.create(text=text, post=post, user=request.user)
+        return redirect('index')
     return render(request, 'posts/index.html', {"posts": posts})
 
 
@@ -12,7 +19,11 @@ def create(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            post = Post()
+            post.image = form.cleaned_data['image']
+            post.owner = request.user
+            post.description = form.cleaned_data['description']
+            post.save()
             return redirect('index')
     else:
         form = PostForm()

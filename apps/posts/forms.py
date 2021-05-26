@@ -5,5 +5,5 @@ from apps.posts.models import Post
 class PostForm(ModelForm):
     class Meta:
         model = Post
-        fields = ['owner', 'image', 'description', ]
+        fields = ['image', 'description', ]
 
