@@ -1,0 +1,10 @@
+{% extends 'index.html' %}
+{% block content %}
+        <div class="card mb-3">
+            <img src="{{ post.image.url }}" class="card-img-top" alt="..." style="width: 100%; height: 350px">
+            <div class="card-body">
+                <p class="card-text">{{ post.description }}</p>
+                <p class="card-text"><small class="text-muted">{{ post.create_at }}</small></p>
+            </div>
+        </div>
+{% endblock %}
