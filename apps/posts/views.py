@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from apps.posts.models import Post
+from apps.posts.models import Post, PostImage
 from apps.comments.models import Comment
-from apps.posts.forms import PostForm
+from apps.posts.forms import PostForm, PostImageForm
+from django.forms import inlineformset_factory
 
 
 def index(request):
@@ -16,18 +17,20 @@ def index(request):
 
 
 def create(request):
+    form = PostForm(request.POST or None)
+    PostImageFormSet = inlineformset_factory(Post, PostImage, form=PostImageForm, extra=1)
     if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = Post()
-            post.image = form.cleaned_data['image']
             post.owner = request.user
             post.description = form.cleaned_data['description']
             post.save()
+            formset = PostImageFormSet(request.POST, request.FILES, instance=post)
+            if formset.is_valid():
+                formset.save()
             return redirect('index')
-    else:
-        form = PostForm()
-    return render(request, 'posts/create.html', {'form': form})
+    formset = PostImageFormSet()
+    return render(request, 'posts/create.html', locals())
 
 
 def detail(request, id):
