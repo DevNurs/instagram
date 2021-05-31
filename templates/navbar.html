@@ -1,3 +1,4 @@
+{% load socialaccount %}
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light card" style="background: white !important;">
         <div class="container">
@@ -6,9 +7,16 @@
                 <div>
                     <a href="{% url 'create' %}" class="btn btn-danger">Create</a>
                 </div>
-                <div>
-                    <a href="" class="btn btn-danger">Log out</a>
-                </div>
+                {% if user.is_authenticated %}
+                    <p>Welcome, {{ user.username }} !</p>
+                    <div>
+                        <a href="{% url 'logout' %}" class="btn btn-danger">Log out</a>
+                    </div>
+                {% else %}
+                    <a class="btn btn-success" href="{% provider_login_url 'google' %}">Login with Google</a>
+                    <a class="btn btn-success" href="{% url 'account_login' %}"> Вход </a>
+                    <a class="btn btn-success" href="{% url 'account_signup' %}"> Регистрация </a>
+                {% endif %}
                 <div class="d-flex align-items-center justify-content-between" style="width: 200px;">
                     <i class="fa fa-home" style="font-size: 25px;"></i>
                     <i class="far fa-heart" style="font-size:25px"></i>
