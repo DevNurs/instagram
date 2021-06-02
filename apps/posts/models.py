@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from apps.tags.models import Tag
 
 
 class Post(models.Model):
@@ -15,6 +16,11 @@ class Post(models.Model):
     )
     create_at = models.DateTimeField(
         auto_now_add=True
+    )
+    tag = models.ManyToManyField(
+        Tag,
+        verbose_name='Тег',
+        related_name='tags'
     )
 
     def __str__(self):

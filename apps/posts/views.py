@@ -3,6 +3,8 @@ from apps.posts.models import Post, PostImage
 from apps.comments.models import Comment
 from apps.posts.forms import PostForm, PostImageForm
 from django.forms import inlineformset_factory
+from django.contrib.auth.models import User
+from apps.tags.models import Tag
 
 
 def index(request):
@@ -25,6 +27,10 @@ def create(request):
             post.owner = request.user
             post.description = form.cleaned_data['description']
             post.save()
+            tags = form.cleaned_data['tag']
+            for tag in tags.split(" "):
+                obj, created = Tag.objects.get_or_create(title=tag)
+                post.tag.add(obj)
             formset = PostImageFormSet(request.POST, request.FILES, instance=post)
             if formset.is_valid():
                 formset.save()
@@ -58,3 +64,8 @@ def delete(request, id):
         post.delete()
         return redirect('index')
     return render(request, 'posts/delete.html')
+
+
+def get_profile(request, id):
+    profile = User.objects.get(id=id)
+    return render(request, 'profile.html', {'profile': profile})
